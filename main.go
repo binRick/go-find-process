@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/k0kubun/pp"
 	"github.com/shirou/gopsutil/process"
 )
 
@@ -63,6 +64,37 @@ func b64_dec(s string) string {
 		_s = fmt.Sprintf(`%s`, DC_dec)
 	}
 	return _s
+}
+
+func EnvKey(k string) ([]int64, []interface{}, time.Duration, error) {
+	started := time.Now()
+	//pids := []int64{}
+	_pids := []int64{}
+	unique_vals := []interface{}{}
+
+	pids, vals, _, err := Pids()
+	Fatal(err)
+
+	for val_index, val := range vals {
+		V := map[string]interface{}{}
+		val_err := json.Unmarshal([]byte(val.(string)), &V)
+		Fatal(val_err)
+
+		for kk, vv := range V {
+			if kk != k {
+				continue
+			}
+			unique_vals = append(unique_vals, vv)
+			val_pid := pids[val_index]
+			if false {
+				pp.Println(`val pid: %d`, val_pid)
+			}
+		}
+
+	}
+	_pids = pids
+
+	return _pids, unique_vals, time.Since(started), err
 }
 
 func Pids() ([]int64, []interface{}, time.Duration, error) {
