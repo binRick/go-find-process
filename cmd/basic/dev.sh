@@ -1,1 +1,1 @@
-nodemon -w . -e go,sh --signal SIGKILL -x ./run.sh
+nodemon -w ../../. -w . -e go,sh --signal SIGKILL -x sh -- -c "./run.sh||true"
